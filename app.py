@@ -24,6 +24,16 @@ def limpiar_numeros(columna):
         .astype(float)
     )
 
+def detectar_header_fila(gl):
+    """Detecta automaticamente la fila donde esta 'Cuenta' y la usa como header"""
+    for idx, row in gl.iterrows():
+        if pd.isna(row).all():  # Fila vacia
+            continue
+        if isinstance(row.iloc[0], str) and 'cuenta' in row.iloc[0].lower():
+            return idx
+    return 5  # Por defecto header=5 si no encuentra
+
+
 st.title("Generador de Balance y PyG desde Libro Mayor")
 
 uploaded_file = st.file_uploader(
@@ -33,7 +43,8 @@ uploaded_file = st.file_uploader(
 
 if uploaded_file is not None:
     with st.spinner("Procesando archivo..."):
-        gl = pd.read_excel(uploaded_file, header=5)
+	    header_fila = detectar_header_fila(pd.read_excel(uploaded_file))
+	    gl = pd.read_excel(uploaded_file, header=header_fila)
         
         gl.columns = gl.columns.str.replace(r'\s+', ' ', regex=True).str.strip()
         st.info(f"Columnas detectadas: {gl.columns.tolist()}")
@@ -105,3 +116,4 @@ if uploaded_file is not None:
         )
         
     st.success("Archivos generados correctamente!")
+
