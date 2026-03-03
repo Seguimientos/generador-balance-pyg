@@ -33,7 +33,17 @@ uploaded_file = st.file_uploader(
 
 if uploaded_file is not None:
     with st.spinner("Procesando archivo..."):
-        gl = pd.read_excel(uploaded_file, header=5)
+        gl_raw = pd.read_excel(uploaded_file, header=None, engine='openpyxl')
+        header_idx = None
+        for idx, row in gl_raw.iterrows():
+                if any('cuenta' in str(cell).lower() for cell in row if pd.notna(cell)):
+                    header_idx = idx
+                    break
+        if header_idx is None:
+            header_idx = 5
+        gl = gl_raw.iloc[header_idx:].copy()
+        gl.columns = gl.iloc[0]
+        gl = gl.iloc[1:].reset_index(drop=True)
         gl.columns = gl.columns.str.replace(r'\s+', ' ',regex=True).str.strip()
         st.info(f"Columnas detectadas: {gl.columns.tolist()}")
         
@@ -104,6 +114,7 @@ if uploaded_file is not None:
         )
         
     st.success("Archivos generados correctamente!")
+
 
 
 
