@@ -33,10 +33,8 @@ uploaded_file = st.file_uploader(
 
 if uploaded_file is not None:
     with st.spinner("Procesando archivo..."):
-		
         gl = pd.read_excel(uploaded_file, header=5)
-		gl.columns = gl.columns.str.replace(r'\s+', ' ',regex=True).str.strip()
-
+        gl.columns = gl.columns.str.replace(r'\s+', ' ',regex=True).str.strip()
         st.info(f"Columnas detectadas: {gl.columns.tolist()}")
         
         gl.loc[:, COL_CUENTA] = gl[COL_CUENTA].ffill()
@@ -106,6 +104,7 @@ if uploaded_file is not None:
         )
         
     st.success("Archivos generados correctamente!")
+
 
 
 
