@@ -24,15 +24,6 @@ def limpiar_numeros(columna):
         .astype(float)
     )
 
-def detectar_header_fila(gl):
-    for idx, row in gl.iterrows():
-        if pd.isna(row).all():  # Fila vacia
-            continue
-        if isinstance(row.iloc[0], str) and 'cuenta' in row.iloc[0].lower():
-            return idx
-    return 5  
-
-
 st.title("Generador de Balance y PyG desde Libro Mayor")
 
 uploaded_file = st.file_uploader(
@@ -117,6 +108,7 @@ if uploaded_file is not None:
         )
         
     st.success("Archivos generados correctamente!")
+
 
 
 
